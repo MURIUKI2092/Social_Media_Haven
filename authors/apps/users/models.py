@@ -5,13 +5,14 @@ from django.contrib.auth.hashers import make_password
 
 # Create your models here.
 class Users(models.Model):
+    id = models.AutoField(primary_key=True)
     first_name=models.CharField(max_length=100)
     last_name=models.CharField(max_length=100)
     email=models.EmailField(db_index=True, unique=True)
     username=models.CharField(db_index=True, max_length=255, unique=True)
     user_password=models.CharField(max_length=255,null = True)
     phone_number =models.CharField(max_length=255,null = True)
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False,unique=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False,unique=True)
     is_active = models.BooleanField(default=True)
     # The `is_staff` flag is expected by Django to determine who can and cannot
     # log into the Django admin site. For most users, this flag will always be
@@ -23,6 +24,9 @@ class Users(models.Model):
 
     # A timestamp reprensenting when this object was last updated.
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class meta:
+        db_table = 'users'
     
     def __str__(self):
         return self.email+" "

@@ -5,11 +5,16 @@ class UserSerializer (serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = ('uuid','username', 'email','is_active')
-        
+
+class RequiredUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ('username', 'email')
+               
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ('first_name', 'last_name', 'email','username','user_password','user_password2','phone_number')
+        fields = ('first_name', 'last_name', 'email','username','user_password','phone_number')
         
         
 class UpdateUserSerializer(serializers.ModelSerializer):
