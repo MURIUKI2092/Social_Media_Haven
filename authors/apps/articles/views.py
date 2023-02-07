@@ -5,6 +5,7 @@ from .serializers import CreateArticlesSerializer,GetAllArticlesSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ValidationError
+from ..users.serializers import UserSerializer
 # Create your views here.
 class CreateSingleArticleView(APIView):
     def post(self, request):
@@ -21,10 +22,23 @@ class CreateSingleArticleView(APIView):
     
 class AllArticlesView(APIView):
     def get(self, request, *args, **kwargs):
-        articles = Articles.objects.all()
+        articles = Articles.objects.all()        
         if articles:
             serializer = GetAllArticlesSerializer(articles, many=True)
-            return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response(serializer.data ,status=status.HTTP_200_OK)
         else:
             return Response(data ={"Error":"No Articles found"},
                             status=status.HTTP_404_NOT_FOUND)
+            
+class DeleteArticleView(APIView):
+    def delete(self, request):
+        incoming_data = request.get_json()
+        article_uuid =incoming_data.get("article_uuid")
+        if article_uuid:
+            try:
+                article = Articles.objects.get(uuid=article_uuid)
+                article.delete()
+                return Response(data ={"msg":"Deleted successfully"},status=status.HTTP_204_NO_CONTENT)
+            except Articles.DoesNotExist:
+                return Response(data ={"Error":"Article with that uuid not found!!"},status=status.HTTP_404_NOT_FOUND)
+            

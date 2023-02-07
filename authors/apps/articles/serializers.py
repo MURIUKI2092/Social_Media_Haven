@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Articles
+from ..users.serializers import RequiredUserSerializer
 
 class CreateArticlesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,6 +8,10 @@ class CreateArticlesSerializer(serializers.ModelSerializer):
         fields = ( 'title', 'description', 'body','image_url', 'author',)
         
 class GetAllArticlesSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Articles
         fields = '__all__'
+        
+    author =RequiredUserSerializer()
+        

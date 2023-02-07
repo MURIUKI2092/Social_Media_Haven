@@ -43,6 +43,7 @@ class AllUsersView(APIView):
         print("+++++",all_users)
         if all_users:
             serializer = UserSerializer(all_users,many=True)
+            print("all_users",serializer)
             #return all users after serialization
             return Response(serializer.data,status=status.HTTP_200_OK)
         else:
