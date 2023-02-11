@@ -60,6 +60,10 @@ class CreateUserView(APIView):
     def post(self, request):
         #get user data 
         incoming_data = request.data
+        email = incoming_data.get("email")
+        user= Users.objects.get(email =email)
+        if user:
+            return Response({"msg":"User Present!"},status=status.HTTP_409_CONFLICT)
         serializer = RegistrationSerializer(data=incoming_data)
         if serializer.is_valid():
             serializer.save()
