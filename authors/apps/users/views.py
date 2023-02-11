@@ -1,11 +1,16 @@
 from django.shortcuts import render
-from .serializers import UserSerializer,RegistrationSerializer,UpdateUserSerializer
+from .serializers import UserSerializer,RegistrationSerializer,UpdateUserSerializer,LoginSerializer
 from rest_framework.views import APIView
 from .models import Users
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
+from rest_framework.generics import GenericAPIView
+from django.conf import settings
+from django.contrib import auth
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+import jwt
 # Create your views here.
 class SingleUserView(APIView):
     """A class to get a single user using uuid"""
@@ -67,12 +72,15 @@ class UpdateUserView(APIView):
         incoming_data = request.data
         id = incoming_data.get("uuid")
         user = Users.objects.get(uuid =id)
-        serializer = UpdateUserSerializer(user,data=incoming_data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
+        if user:
+            serializer = UpdateUserSerializer(user,data=incoming_data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data ={"Error":"User to update was not found!!"},status=status.HTTP_409_CONFLICT)
+            
 class DeleteUserView(APIView):
     def delete(self,request):
         id = request.data.get("uuid")
@@ -83,3 +91,27 @@ class DeleteUserView(APIView):
             return Response(data ={"msg":"Deleted successfully"},status=status.HTTP_204_NO_CONTENT)
         except Users.DoesNotExist:
             return Response(data ={"Error":"user with those credentials not found!!"},status=status.HTTP_404_NOT_FOUND)
+        
+class LoginUserView(GenericAPIView):
+    serializer_class =LoginSerializer
+    def post(self,request):
+        incoming_data = request.data
+        print("+++++++ hello")
+        username = incoming_data.get("username")
+        password = incoming_data.get("user_password")
+        print("+++++++",username,password)
+        user = auth.authenticate(username =username, password=password)
+        print("<<<<<",user)
+        
+        if user:
+            auth_token =jwt.encode({"username":user.username},settings.JWT_SECRET_KEY)
+            serializer =self.serializer_class(user)
+            
+            data = {
+                "user":serializer.data,
+                "token":auth_token,
+            }
+            return Response(data,status=status.HTTP_200_OK)
+        #when not authenticated
+        return Response({'details':"Invalid credentials!!"},status=status.HTTP_401_UNAUTHORIZED)
+    

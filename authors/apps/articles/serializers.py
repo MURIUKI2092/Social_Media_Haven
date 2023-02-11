@@ -15,3 +15,8 @@ class GetAllArticlesSerializer(serializers.ModelSerializer):
         
     author =RequiredUserSerializer()
         
+class UpdateArticlesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Articles
+        fields=('title','description','body','image_url')
+        extra_kwargs = {'uuid': {'read_only': True, 'required': True}}
