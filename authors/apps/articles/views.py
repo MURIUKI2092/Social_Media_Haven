@@ -25,7 +25,7 @@ class AllArticlesView(APIView):
         articles = Articles.objects.all()        
         if articles:
             serializer = GetAllArticlesSerializer(articles, many=True)
-            return Response(serializer.data ,status=status.HTTP_200_OK)
+            return Response({"Articles":serializer.data} ,status=status.HTTP_200_OK)
         else:
             return Response(data ={"Error":"No Articles found"},
                             status=status.HTTP_404_NOT_FOUND)

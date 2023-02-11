@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authors.apps.users',
     'authors.apps.articles',
+    'authors.apps.comments',
 ]
 REST_FRAMEWORK={
     'DEFAULT_AUTHENTICATION_CLASSES':(
