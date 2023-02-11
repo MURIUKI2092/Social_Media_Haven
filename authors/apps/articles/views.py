@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import Articles
-from .serializers import CreateArticlesSerializer,GetAllArticlesSerializer
+from .serializers import CreateArticlesSerializer,GetAllArticlesSerializer,UpdateArticlesSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ValidationError
@@ -41,4 +41,22 @@ class DeleteArticleView(APIView):
                 return Response(data ={"msg":"Deleted successfully"},status=status.HTTP_204_NO_CONTENT)
             except Articles.DoesNotExist:
                 return Response(data ={"Error":"Article with that uuid not found!!"},status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data ={"Error":"Article uuid required"},status=status.HTTP_409_CONFLICT)
             
+class UpdateArticleView(APIView):
+    def put(self,request):
+        incoming_data = request.get_json()
+        article_uuid= incoming_data.get("article_uuid") 
+        if article_uuid:
+            try:
+                article = Articles.objects.get(uuid=article_uuid)
+                serializer = UpdateArticlesSerializer(article,data=incoming_data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(data ={"msg":"Deleted successfully"},status=status.HTTP_204_NO_CONTENT)
+            except Articles.DoesNotExist:
+                return Response(data ={"Error":"Article with that uuid not found!!"},status=status.HTTP_404_NOT_FOUND)
+            
+        else:
+            return Response(data ={"Error":"Article uuid required"},status=status.HTTP_409_CONFLICT)
