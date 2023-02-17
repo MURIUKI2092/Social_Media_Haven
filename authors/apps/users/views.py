@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import UserSerializer,RegistrationSerializer,UpdateUserSerializer,LoginSerializer
+from .serializers import RequiredUserSerializer,RegistrationSerializer,UpdateUserSerializer,LoginSerializer
 from rest_framework.views import APIView
 from .models import Users
 from rest_framework.response import Response
@@ -14,17 +14,17 @@ import jwt
 # Create your views here.
 class SingleUserView(APIView):
     """A class to get a single user using uuid"""
-    serializer_class = UserSerializer
+    serializer_class = RequiredUserSerializer
     
     def get(self, request, *args, **kwargs):
         incoming_data = request.data
         print(incoming_data)
         # what to filter the users with
-        uuid = incoming_data.get('uuid')
+        email = incoming_data.get('email')
         #get the single user
         try:
             #single _user
-            user = Users.objects.get(uuid=uuid)
+            user = Users.objects.get(email=email)
             if user:
                 
                 #serialize the user
@@ -70,8 +70,8 @@ class CreateUserView(APIView):
 class UpdateUserView(APIView):
     def put(self, request):
         incoming_data = request.data
-        id = incoming_data.get("uuid")
-        user = Users.objects.get(uuid =id)
+        email = incoming_data.get("email")
+        user = Users.objects.get(email =email)
         if user:
             serializer = UpdateUserSerializer(user,data=incoming_data)
             if serializer.is_valid():
