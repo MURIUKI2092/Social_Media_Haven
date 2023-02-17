@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'authors.apps.users',
     'authors.apps.articles',
     'authors.apps.comments',
+    'authors.apps.bookmarks'
 ]
 REST_FRAMEWORK={
     'DEFAULT_AUTHENTICATION_CLASSES':(
