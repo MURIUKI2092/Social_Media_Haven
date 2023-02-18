@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import RequiredUserSerializer,RegistrationSerializer,UpdateUserSerializer,LoginSerializer
+from .serializers import RequiredUserSerializer,RegistrationSerializer,UpdateUserSerializer,LoginSerializer,UserSerializer
 from rest_framework.views import APIView
 from .models import Users
 from rest_framework.response import Response

@@ -4,10 +4,10 @@ from ..users.serializers import RequiredUserSerializer
 from ..articles.serializers import RequiredArticleSerializer
 
 ## all serializers for Bookmark are defined here
-class bookmarkSerializer(serializers.Serializer):
+class bookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model=Bookmark
-        fields =('user_uuid','article_uuid')
+        fields =('user','article')
 class SingleBookmarkSerializer(serializers.Serializer):
     
     class Meta:
