@@ -31,4 +31,19 @@ class MakeBookmarkView(APIView):
             except Exception as e:
                 print("An Error occured while creating a bookmark")
         
-        pass
+
+class GetSingleBookmark(APIView):
+    def get(self, request):
+        incoming_data = request.data
+        uuid= incoming_data.get('uuid')
+        ## check whether the bookmark exists
+        try:
+            bookmark = Bookmark.objects.get(uuid=uuid)
+            serializer_data = SingleBookmarkSerializer(bookmark)
+            return Response({"msg":"success", "bookmark": serializer_data},status=status.HTTP_200_OK)
+            
+        except Bookmark.DoesNotExist:
+            return Response(data={
+                "msg":"Bookmark with those credentials does not exist"
+            },status=status.HTTP_404_NOT_FOUND)
+        

@@ -20,3 +20,8 @@ class UpdateArticlesSerializer(serializers.ModelSerializer):
         model = Articles
         fields=('title','description','body','image_url')
         extra_kwargs = {'uuid': {'read_only': True, 'required': True}}
+        
+class  RequiredArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Articles
+        fields =('title','description','body','image_url')

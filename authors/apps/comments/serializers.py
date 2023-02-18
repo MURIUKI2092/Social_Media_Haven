@@ -18,4 +18,9 @@ class SingleCommentSerializer(serializers.ModelSerializer):
 class UpdateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Comments
-        fields=('comment_body',)        
+        fields=('comment_body',)     
+class RequiredCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        models = Comments
+        fields='__all__'
+       
